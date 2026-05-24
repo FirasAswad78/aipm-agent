@@ -1,26 +1,22 @@
 import os
 import streamlit as st
 from openai import OpenAI
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 api_key = os.getenv("OPENAI_API_KEY")
 
 client = OpenAI(api_key=api_key)
-DB_HOST = os.getenv("DB_HOST")
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_PORT = os.getenv("DB_PORT")
-
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 try:
     engine = create_engine(DATABASE_URL)
 
     with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
         st.success("Database connection successful!")
 
 except Exception as e:
     st.error(f"Database connection failed: {e}")
+
 
 st.set_page_config(
     page_title="AI IT Project Manager",
